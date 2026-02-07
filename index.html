@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Valentine 💖</title>
+
+  <!-- IMPORTANT for mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -10,7 +14,7 @@
       background: linear-gradient(135deg, #ffe6ea, #fff0f6);
       overflow: hidden;
       margin: 0;
-      padding-top: 120px;
+      padding-top: 100px;
     }
 
     h1, #message, button {
@@ -20,12 +24,12 @@
 
     h1 {
       color: #d6336c;
-      font-size: 30px;
+      font-size: 28px;
     }
 
     #message {
       margin: 20px;
-      font-size: 20px;
+      font-size: 18px;
       color: #444;
       padding: 0 20px;
     }
@@ -42,7 +46,7 @@
     #yesBtn {
       background-color: #ff4d6d;
       color: white;
-      transition: all 0.3s ease;
+      transition: transform 0.3s ease;
     }
 
     #noBtn {
@@ -65,10 +69,10 @@
 
     @keyframes floatPhoto {
       from {
-        transform: translateY(110vh) rotate(0deg);
+        transform: translateY(110vh);
       }
       to {
-        transform: translateY(-120vh) rotate(10deg);
+        transform: translateY(-120vh);
       }
     }
 
@@ -76,7 +80,7 @@
     .name-heart {
       position: fixed;
       bottom: -40px;
-      font-size: 18px;
+      font-size: 16px;
       color: #ff4d6d;
       opacity: 0.8;
       animation: floatUp linear infinite;
@@ -120,89 +124,86 @@
     <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
   </audio>
 
-  <script>
-    const photos = [
-      "photo1.jpg",
-      "photo2.jpg",
-      "photo3.jpg",
-      "photo4.jpg"
-    ];
+<script>
+  const photos = ["photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg"];
 
-    function createPhoto() {
-      const img = document.createElement("img");
-      img.src = photos[Math.floor(Math.random() * photos.length)];
-      img.className = "photo-bg";
-      img.style.left = Math.random() * 100 + "vw";
-      img.style.animationDuration = (Math.random() * 10 + 15) + "s";
-      document.body.appendChild(img);
-      setTimeout(() => img.remove(), 25000);
+  function createPhoto() {
+    const img = document.createElement("img");
+    img.src = photos[Math.floor(Math.random() * photos.length)];
+    img.className = "photo-bg";
+    img.style.left = Math.random() * 100 + "vw";
+    img.style.animationDuration = (Math.random() * 10 + 15) + "s";
+    document.body.appendChild(img);
+    setTimeout(() => img.remove(), 25000);
+  }
+  setInterval(createPhoto, 3000);
+
+  let yesStage = 0;
+  let musicStarted = false;
+  let noClickCount = 0;
+
+  function startMusic() {
+    if (!musicStarted) {
+      document.getElementById("bgMusic").play();
+      musicStarted = true;
     }
+  }
 
-    setInterval(createPhoto, 3000);
+  function sayNo() {
+    startMusic();
+    noClickCount++;
+    const yesBtn = document.getElementById("yesBtn");
 
-    /* Existing logic (unchanged) */
-    let yesStage = 0;
-    let musicStarted = false;
+    let scale = 1 + noClickCount * 0.2;
+    yesBtn.style.transform = `scale(${scale})`;
+  }
 
-    function startMusic() {
-      if (!musicStarted) {
-        document.getElementById("bgMusic").play();
-        musicStarted = true;
-      }
-    }
+  function handleYes() {
+    startMusic();
+    launchConfetti();
+    yesStage++;
 
-    function sayNo() {
-      startMusic();
-      const yesBtn = document.getElementById("yesBtn");
-      yesBtn.style.fontSize = "28px";
-    }
-
-    function handleYes() {
-      startMusic();
+    if (yesStage === 1) {
+      document.getElementById("message").innerText =
+        "You will celebrate 7 days of Valentine with me every year 💖";
+      document.getElementById("yesBtn").innerText = "Click here ➡️";
+      document.getElementById("noBtn").style.display = "none";
+    } 
+    else if (yesStage === 2) {
+      document.getElementById("message").innerText =
+        "आपल्या साठी रोजच Valentine Day असतो ❤️";
+    } 
+    else {
+      document.body.innerHTML =
+        "<h1>Promise 💍❤️</h1><p style='font-size:22px;'>I promise to choose you every day 💕</p>";
       launchConfetti();
-      yesStage++;
-
-      if (yesStage === 1) {
-        document.getElementById("message").innerText =
-          "You will celebrate 7 days of Valentine with me every year 💖";
-        document.getElementById("yesBtn").innerText = "Click here ➡️";
-        document.getElementById("noBtn").style.display = "none";
-      } 
-      else if (yesStage === 2) {
-        document.getElementById("message").innerText =
-          "आपल्या साठी रोजच Valentine Day असतो ❤️";
-      } 
-      else {
-        document.body.innerHTML =
-          "<h1>Vaibhav ❤️</h1><p style='font-size:22px;'>Happy Valentine’s Day 💕</p>";
-        launchConfetti();
-      }
     }
+  }
 
-    function launchConfetti() {
-      const emojis = ["❤️", "💖", "💘"];
-      for (let i = 0; i < 20; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-        c.style.left = Math.random() * 100 + "vw";
-        c.style.animationDuration = (Math.random() * 3 + 2) + "s";
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 5000);
-      }
+  function launchConfetti() {
+    const emojis = ["❤️","💖","💘"];
+    for (let i = 0; i < 20; i++) {
+      const c = document.createElement("div");
+      c.className = "confetti";
+      c.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      c.style.left = Math.random() * 100 + "vw";
+      c.style.animationDuration = (Math.random() * 3 + 2) + "s";
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
     }
+  }
 
-    /* Name hearts */
-    setInterval(() => {
-      const h = document.createElement("div");
-      h.className = "name-heart";
-      h.innerText = "Vaibhav ❤️";
-      h.style.left = Math.random() * 100 + "vw";
-      h.style.animationDuration = (Math.random() * 6 + 6) + "s";
-      document.body.appendChild(h);
-      setTimeout(() => h.remove(), 12000);
-    }, 800);
-  </script>
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "name-heart";
+    h.innerText = "Vaibhav ❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = (Math.random() * 6 + 6) + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 12000);
+  }, 800);
+
+</script>
 
 </body>
 </html>
