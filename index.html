@@ -1,208 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Valentine 💖</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Vaibhav 💖</title>
 
-  <!-- IMPORTANT for mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: linear-gradient(135deg, #ffe6ea, #fff0f6);
-      overflow: hidden;
-      margin: 0;
-      padding-top: 100px;
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: 'Comic Sans MS', cursive;
     }
 
-    h1, #message, button {
-      position: relative;
-      z-index: 3;
+    body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+        background-size: cover;
+        background-position: center;
+        animation: slideshow 20s infinite;
+    }
+
+    @keyframes slideshow {
+        0% { background-image: url('photo1.jpg'); }
+        33% { background-image: url('photo2.jpg'); }
+        66% { background-image: url('photo3.jpg'); }
+        100% { background-image: url('photo1.jpg'); }
+    }
+
+    .card {
+        background: rgba(0,0,0,0.6);
+        padding: 30px;
+        border-radius: 20px;
+        max-width: 90%;
     }
 
     h1 {
-      color: #d6336c;
-      font-size: 28px;
-    }
-
-    #message {
-      margin: 20px;
-      font-size: 18px;
-      color: #444;
-      padding: 0 20px;
+        font-size: 2.2rem;
     }
 
     button {
-      padding: 15px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      margin: 10px;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin: 10px;
+        transition: all 0.3s ease;
     }
 
     #yesBtn {
-      background-color: #ff4d6d;
-      color: white;
-      transition: transform 0.3s ease;
+        background: #ff4d6d;
+        color: white;
     }
 
     #noBtn {
-      background-color: #adb5bd;
-      color: white;
+        background: #999;
+        color: black;
     }
 
-    /* Background photos */
-    .photo-bg {
-      position: fixed;
-      width: 120px;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 16px;
-      opacity: 0.25;
-      animation: floatPhoto linear infinite;
-      z-index: 1;
-      pointer-events: none;
+    .hidden {
+        display: none;
     }
 
-    @keyframes floatPhoto {
-      from {
-        transform: translateY(110vh);
-      }
-      to {
-        transform: translateY(-120vh);
-      }
+    /* Floating hearts */
+    .heart {
+        position: absolute;
+        color: pink;
+        font-size: 20px;
+        animation: float 6s linear infinite;
+        pointer-events: none;
     }
 
-    /* Name hearts */
-    .name-heart {
-      position: fixed;
-      bottom: -40px;
-      font-size: 16px;
-      color: #ff4d6d;
-      opacity: 0.8;
-      animation: floatUp linear infinite;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    @keyframes floatUp {
-      to {
-        transform: translateY(-110vh);
-        opacity: 0;
-      }
+    @keyframes float {
+        0% {
+            transform: translateY(100vh);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-10vh);
+            opacity: 0;
+        }
     }
 
     /* Confetti */
     .confetti {
-      position: fixed;
-      top: -10px;
-      font-size: 24px;
-      animation: fall linear infinite;
-      z-index: 4;
-      pointer-events: none;
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        animation: fall 3s linear infinite;
     }
 
     @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(360deg);
-      }
+        from { transform: translateY(-10vh) rotate(0); }
+        to { transform: translateY(110vh) rotate(360deg); }
     }
-  </style>
+</style>
 </head>
+
 <body>
 
-  <h1 id="title">Will you be my Valentine? 💘</h1>
-  <div id="message"></div>
+<audio id="music" src="music.mp3" loop></audio>
 
-  <button id="yesBtn" onclick="handleYes()">Yes ❤️</button>
-  <button id="noBtn" onclick="sayNo()">No 💔</button>
+<div class="card" id="mainCard">
+    <h1>💖 Vaibhav, will you be my Valentine? 💖</h1>
+    <button id="yesBtn" onclick="yesClicked()">YES 💕</button>
+    <button id="noBtn" onclick="noClicked()">NO 😢</button>
+</div>
 
-  <audio id="bgMusic" loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
-  </audio>
+<div class="card hidden" id="messageCard">
+    <h1 id="promiseText"></h1>
+    <button onclick="nextPromise()">Click here 💖</button>
+</div>
 
 <script>
-  const photos = ["photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg"];
+    const noMessages = [
+        "Are you sure? 🥺",
+        "Think again Vaibhav 💔",
+        "Don’t break my heart 😭",
+        "I’ll make your favorite food 🍲",
+        "Last chance 😢"
+    ];
 
-  function createPhoto() {
-    const img = document.createElement("img");
-    img.src = photos[Math.floor(Math.random() * photos.length)];
-    img.className = "photo-bg";
-    img.style.left = Math.random() * 100 + "vw";
-    img.style.animationDuration = (Math.random() * 10 + 15) + "s";
-    document.body.appendChild(img);
-    setTimeout(() => img.remove(), 25000);
-  }
-  setInterval(createPhoto, 3000);
+    let noCount = 0;
+    let yesSize = 1;
+    let promiseStep = 0;
 
-  let yesStage = 0;
-  let musicStarted = false;
-  let noClickCount = 0;
+    function noClicked() {
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
 
-  function startMusic() {
-    if (!musicStarted) {
-      document.getElementById("bgMusic").play();
-      musicStarted = true;
+        noBtn.innerText = noMessages[noCount % noMessages.length];
+        noCount++;
+
+        yesSize += 0.2;
+        yesBtn.style.transform = `scale(${yesSize})`;
     }
-  }
 
-  function sayNo() {
-    startMusic();
-    noClickCount++;
-    const yesBtn = document.getElementById("yesBtn");
-
-    let scale = 1 + noClickCount * 0.2;
-    yesBtn.style.transform = `scale(${scale})`;
-  }
-
-  function handleYes() {
-    startMusic();
-    launchConfetti();
-    yesStage++;
-
-    if (yesStage === 1) {
-      document.getElementById("message").innerText =
-        "You will celebrate 7 days of Valentine with me every year 💖";
-      document.getElementById("yesBtn").innerText = "Promise ? 💖";
-      document.getElementById("noBtn").style.display = "none";
-    } 
-    else if (yesStage === 2) {
-      document.getElementById("message").innerText =
-        "आपल्या साठी रोजच Valentine Day असतो ❤️";
-    } 
-    else {
-      document.body.innerHTML =
-        "<h1>Promise 💍❤️</h1><p style='font-size:22px;'>I promise to choose you every day 💕</p>";
-      launchConfetti();
+    function yesClicked() {
+        document.getElementById("music").play();
+        document.getElementById("mainCard").classList.add("hidden");
+        document.getElementById("messageCard").classList.remove("hidden");
+        showConfetti();
+        startHearts();
+        nextPromise();
     }
-  }
 
-  function launchConfetti() {
-    const emojis = ["❤️","💖","💘"];
-    for (let i = 0; i < 20; i++) {
-      const c = document.createElement("div");
-      c.className = "confetti";
-      c.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      c.style.left = Math.random() * 100 + "vw";
-      c.style.animationDuration = (Math.random() * 3 + 2) + "s";
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 5000);
+    function nextPromise() {
+        const text = document.getElementById("promiseText");
+
+        if (promiseStep === 0) {
+            text.innerText =
+            "💖 You will celebrate 7 days of Valentine with me every year from now on 💖";
+        } else if (promiseStep === 1) {
+            text.innerText =
+            "💞 I know you treat me like Valentine only for one week,\nbut you will never say —\n'Valentine day kay asta, aaplya sathi rojach Valentine day ahe' 💞";
+        } else {
+            text.innerText = "💘 I LOVE YOU VAIBHAV 💘";
+            document.querySelector("#messageCard button").style.display = "none";
+        }
+
+        promiseStep++;
     }
-  }
 
-  setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "name-heart";
-    h.innerText = "Vaibhav ❤️";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.animationDuration = (Math.random() * 6 + 6) + "s";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 12000);
-  }, 800);
+    function startHearts() {
+        setInterval(() => {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = (20 + Math.random() * 20) + "px";
+            heart.innerText = "💖 Vaibhav 💖";
+            document.body.appendChild(heart);
 
+            setTimeout(() => heart.remove(), 6000);
+        }, 300);
+    }
+
+    function showConfetti() {
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.backgroundColor =
+                ["#ff4d6d", "#ffd166", "#06d6a0"][Math.floor(Math.random()*3)];
+            confetti.style.animationDuration = (2 + Math.random() * 3) + "s";
+            document.body.appendChild(confetti);
+
+            setTimeout(() => confetti.remove(), 5000);
+        }
+    }
 </script>
 
 </body>
